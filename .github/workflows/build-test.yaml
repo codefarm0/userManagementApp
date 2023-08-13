@@ -19,26 +19,35 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'temurin', 'zulu', etc.)
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
 
+      - name: Heroku Login
+        run: heroku login -i
+
+      - name: Deploy to Heroku
+        run: |
+          heroku git:remote -a your-heroku-app-name
+          git push heroku main:main
       # Fix Gradle Wrapper permissions on Linux/macOS
-      - name: Set Gradlew Permissions
-        run: chmod +x ./gradlew
-        if: ${{ runner.os }} != 'Windows'
+#      - name: Set Gradlew Permissions
+#        run: chmod +x ./gradlew
+#        if: ${{ runner.os }} != 'Windows'
 
-      - name: Build with Gradle
-        run: ./gradlew build --info
-
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: my-app-artifacts
-          path: build/libs/*.jar  # Change this to the directory containing your generated artifacts
-
-      - name: Download JAR Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: my-app-artifacts
-          path: downloaded-artifacts  # Change this to the directory where you want to store the downloaded artifact
+#      - name: Build with Gradle
+#        run: ./gradlew build --info
+#
+#      - name: Archive Artifacts
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: my-app-artifacts
+#          path: build/libs/*.jar  # Change this to the directory containing your generated artifacts
+#
+#      - name: Download JAR Artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: my-app-artifacts
+#          path: downloaded-artifacts  # Change this to the directory where you want to store the downloaded artifact
 
 #      - name: Display Artifact Location
 #        run: |
