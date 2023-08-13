@@ -33,4 +33,5 @@ public class SimpleCalculator {
         return Math.log(number);
     }
 
+
 }
