@@ -1,0 +1,44 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to match the branch you want to trigger the workflow on.
+
+jobs:
+  build-test-deploy:
+    name: Build, Test, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'temurin', 'zulu', etc.)
+
+      # Fix Gradle Wrapper permissions on Linux/macOS
+      - name: Set Gradlew Permissions
+        run: chmod +x ./gradlew
+        if: ${{ runner.os }} != 'Windows'
+
+      - name: Build with Gradle
+        run: ./gradlew build --info
+
+      - name: Generate Artifacts
+        run: ./gradlew assemble --info
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-app-artifacts
+          path: path/to/artifacts  # Change this to the directory containing your generated artifacts
+
+      - name: Deploy to Production
+        # Add deployment steps here, such as Docker build, push, and Kubernetes deployment.
+        # Example: (Replace this with your deployment commands)
+        run: ./gradlew bootRun
+
