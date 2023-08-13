@@ -16,17 +16,28 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: 17
+          java-version: 11
           distribution: 'adopt'
 
+      - name: Install AWS CLI and Elastic Beanstalk CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --update
+
+          pip3 install --user awsebcli
+
+      - name: Prepare AWS Credentials Directory
+        run: mkdir -p ~/.aws
+
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+        run: |
+          echo "[default]" >> ~/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          chmod 600 ~/.aws/credentials
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -p Java
-          eb deploy
+          eb init -r ${{ secrets.AWS_REGION }} -p Java
+          eb deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
