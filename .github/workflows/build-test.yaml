@@ -19,6 +19,9 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
+      - name: Prepare AWS Credentials Directory
+        run: mkdir -p ~/.aws
+
       - name: Configure AWS Credentials
         run: |
           echo "[default]" >> ~/.aws/credentials
