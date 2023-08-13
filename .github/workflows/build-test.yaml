@@ -16,16 +16,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'adopt'
-
-      - name: Install AWS CLI and Elastic Beanstalk CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-
-          pip3 install --user awsebcli
 
       - name: Prepare AWS Credentials Directory
         run: mkdir -p ~/.aws
@@ -39,5 +31,10 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -r ${{ secrets.AWS_REGION }} -p Java
-          eb deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
+          /usr/local/aws-cli/v2/current/aws configure set default.region ${{ secrets.AWS_REGION }}
+          /usr/local/aws-cli/v2/current/aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          /usr/local/aws-cli/v2/current/aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          /usr/local/aws-cli/v2/current/aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
+          /usr/local/aws-cli/v2/current/aws configure set aws_cli_auto_prompt on
+          /usr/local/aws-cli/v2/current/aws elasticbeanstalk init -r ${{ secrets.AWS_REGION }} -p Java
+          /usr/local/aws-cli/v2/current/aws elasticbeanstalk deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
