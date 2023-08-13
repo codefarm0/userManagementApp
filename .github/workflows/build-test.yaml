@@ -19,22 +19,14 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
-      - name: Prepare AWS Credentials Directory
-        run: mkdir -p ~/.aws
-
       - name: Configure AWS Credentials
-        run: |
-          echo "[default]" >> ~/.aws/credentials
-          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
-          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-          chmod 600 ~/.aws/credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          /usr/local/aws-cli/v2/current/aws configure set default.region ${{ secrets.AWS_REGION }}
-          /usr/local/aws-cli/v2/current/aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          /usr/local/aws-cli/v2/current/aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          /usr/local/aws-cli/v2/current/aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
-          /usr/local/aws-cli/v2/current/aws configure set aws_cli_auto_prompt on
-          /usr/local/aws-cli/v2/current/aws elasticbeanstalk init -r ${{ secrets.AWS_REGION }} -p Java
-          /usr/local/aws-cli/v2/current/aws elasticbeanstalk deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
+          eb init -p Java
+          eb deploy
