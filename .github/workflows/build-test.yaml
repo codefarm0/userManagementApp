@@ -16,7 +16,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: 17
+            java-version: 17
+            distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'temurin', 'zulu', etc.)
 
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
