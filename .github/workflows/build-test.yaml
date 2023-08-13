@@ -1,9 +1,9 @@
-name: Deploy to Heroku
+name: Deploy to AWS Elastic Beanstalk
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to the branch you want to trigger deployments from
 
 jobs:
   deploy:
@@ -16,15 +16,19 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-            java-version: 17
-            distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'temurin', 'zulu', etc.)
+          java-version: 11
+          distribution: 'adopt'
 
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: Deploy to Heroku
+      - name: Install AWS CLI
         run: |
-          heroku git:remote -a my-first-hello-heroku
-          heroku plugins:install @heroku-cli/plugin-java
-          heroku deploy:jar build/libs/*.jar --jdk=17 --includes=src/main/resources/application.properties
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
 
+      - name: Deploy to AWS Elastic Beanstalk
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+          eb init -r ${{ secrets.AWS_REGION }} -p Java
+          eb deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
