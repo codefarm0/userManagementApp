@@ -36,8 +36,14 @@ jobs:
           echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
           echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
           chmod 600 ~/.aws/credentials
+      - name: Use environment variables
+        run: |
+          echo ${{ env.AWS_REGION }}
+          echo ${{ env.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
+          echo ${{ AWS_REGION }}
+          echo ${{ AWS_ELASTIC_BEANSTALK_ENV_NAME }}
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -r ${{ env.AWS_REGION }} -p Corretto 17.0.8.7.1
+          eb init -r ${{ env.AWS_REGION }} -p Java
           eb deploy ${{ env.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
