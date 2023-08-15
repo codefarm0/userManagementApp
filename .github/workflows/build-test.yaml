@@ -40,8 +40,6 @@ jobs:
         run: |
           echo ${{ env.AWS_REGION }}
           echo ${{ env.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
-          echo ${{ AWS_REGION }}
-          echo ${{ AWS_ELASTIC_BEANSTALK_ENV_NAME }}
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
