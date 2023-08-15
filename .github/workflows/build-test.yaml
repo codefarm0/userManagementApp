@@ -43,5 +43,5 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -r ${{ env.AWS_REGION }} -p Java
-          eb deploy ${{ env.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
+          eb init -r ap-south-1 -p Java
+          eb deploy User-management-env
