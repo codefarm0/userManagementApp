@@ -39,5 +39,5 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -r ${{ secrets.AWS_REGION }} -p Corretto 17.0.8.7.1
-          eb deploy ${{ secrets.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
+          eb init -r ${{ env.AWS_REGION }} -p Corretto 17.0.8.7.1
+          eb deploy ${{ env.AWS_ELASTIC_BEANSTALK_ENV_NAME }}
