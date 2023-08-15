@@ -43,5 +43,5 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -r ap-south-1 -p Java
+          eb init -r ap-south-1 -p Corretto 17
           eb deploy User-management-env
